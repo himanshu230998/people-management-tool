@@ -1,0 +1,22 @@
+name: Echo Opened PRs
+
+on:
+  push:
+    branches:
+        - "**"
+
+jobs:
+  echo-prs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Echo PR information
+        run: |
+          echo "Pull Requests Opened:"
+          echo "---------------------"
+          for pr in $(curl -s "https://api.github.com/repos/${{ github.repository }}/pulls" | jq -r '.[].html_url'); do
+            echo "- $pr"
+          done
