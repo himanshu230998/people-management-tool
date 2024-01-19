@@ -3,20 +3,25 @@ name: Echo Opened PRs
 on:
   push:
     branches:
-        - "**"
+      - "**"
 
 jobs:
-  echo-prs:
+  echo-pr-diff-files:
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      - name: Echo PR information
+      - name: Echo PR diff file names
         run: |
-          echo "Pull Requests Opened:"
-          echo "---------------------"
-          for pr in $(curl -s "https://api.github.com/repos/${{ github.repository }}/pulls" | jq -r '.[].html_url'); do
-            echo "- $pr"
+          echo "PR Diff Files:"
+          echo "--------------"
+          
+          # Get the list of modified files for each PR
+          for pr_number in $(curl -s "https://api.github.com/repos/${{ github.repository }}/pulls" | jq -r '.[].number'); do
+            diff_files=$(curl -s "https://api.github.com/repos/${{ github.repository }}/pulls/${pr_number}/files" | jq -r '.[].filename')
+            
+            echo "Files for PR#${pr_number}:"
+            echo "$diff_files" | sed 's/^/  - /'
           done
