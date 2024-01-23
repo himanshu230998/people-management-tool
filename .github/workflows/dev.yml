@@ -4,8 +4,8 @@ env:
   ENV: airflow-test
 
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
-  ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_SANDBOX }}
-  SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_SANDBOX }}
+  ACCESS_KEY_ID: ${{secrets.ACCESS_KEY}}
+  SECRET_ACCESS_KEY: ${{secrets.SECRET_ACCESS_KEY}}
   AWS_DEFAULT_REGION: us-east-1
 
  
