@@ -1,22 +1,55 @@
-name: Echo Opened PRs
+name: TEST AWS Deploy
+
+env:
+  ENV: airflow-test
+
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
+  ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_SANDBOX }}
+  SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_SANDBOX }}
+  AWS_DEFAULT_REGION: us-east-1
+
+ 
 
 on:
+  workflow_dispatch:
   push:
     branches:
-        - "**"
+      - "**"
 
 jobs:
-  echo-prs:
-    runs-on: ubuntu-latest
 
+  Dags:
+    name: 'Dags/Sync'
+    runs-on: ubuntu-22.04
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ env.ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
-      - name: Echo PR information
+      - name: Sync dags to s3
         run: |
-          echo "Pull Requests Opened:"
-          echo "---------------------"
-          for pr in $(curl -s "https://api.github.com/repos/${{ github.repository }}/pulls" | jq -r '.[].html_url'); do
-            echo "- $pr"
+          prefix="${{ github.head_ref || github.ref_name }} _"
+          IFS=$'\n'
+          mkdir "modified_files_directory"
+
+          for item in $(git diff --name-only origin/develop ${{ github.sha }} | grep dags | grep -v dags/examples | grep -v dags/environment | grep .py); do
+              echo "Processing item: $item"
+              directory=$(dirname "$item")
+              filename=$(basename "$item")
+              echo directory = $directory, filename = $filename
+              if [ -d "/home/beehyv/Desktop/develop/$directory" ]; then
+                  mkdir -p "modified_files_directory/$directory"
+                  cp "$item" "modified_files_directory/$directory"
+                  new_name="${prefix}${filename}"
+                  mv "modified_files_directory/$item" "modified_files_directory/$directory/$new_name"
+                  sed -i "s/task_id="/task_id="$prefix/" "modified_files_directory/$directory/$new_name"
+                  sed -i "s/name="/name="$prefix/" "modified_files_directory/$directory/$new_name"
+                  echo "$new_name"
+              fi
+              echo 
           done
+
+          aws s3 sync modified_files_directory/ s3://lettesthimanshu/dags/ --delete
