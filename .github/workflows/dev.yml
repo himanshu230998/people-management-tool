@@ -1,55 +1,119 @@
-name: TEST AWS Deploy
+name: DEV AWS Deploy
 
 env:
   ENV: airflow-test
 
-  BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
-  ACCESS_KEY_ID: ${{secrets.ACCESS_KEY}}
-  SECRET_ACCESS_KEY: ${{secrets.SECRET_ACCESS_KEY}}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_SANDBOX }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_SANDBOX }}
   AWS_DEFAULT_REGION: us-east-1
 
- 
+  TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
+  GITHUB_TOKEN: ${{ secrets.GHUB_TOKEN }}
+
+  SHARED_REPO_NAME: EasyKnockOrg/devops-shared-library
+  SHARED_REPO_NAME_SSH: git@github.com:EasyKnockOrg/devops-shared-library.git
+  SHARED_REPO_BRANCH: master
+
+  AWS_BUCKET_NAME: ek1-app-airflow-test
+  AWS_AIRFLOW_ENV: ek1-air-airflow-test
+
+  EKS_CLUSTER_NAME: ek1-eks-airflow-test
+  K8S_ENV: tools
+  K8S_PROJECT: airflow
+  K8S_NAMESPACE: default
+
+  K8S_ECR_SHORT01: ek1-air-image01
+  DOCKER_FILE01: Dockerfile-lead-score
+  K8S_ECR_SHORT02: ek1-air-address-standardization
+  DOCKER_FILE02: Dockerfile-address-standardization
+  K8S_ECR_SHORT03: ek1-air-airtable-data
+  DOCKER_FILE03: Dockerfile-airtable-data
+  K8S_ECR_SHORT04: ek1-air-appfolio-address-standardization
+  DOCKER_FILE04: Dockerfile-appfolio-address-standardization
+  K8S_ECR_SHORT05: ek1-air-bing-data
+  DOCKER_FILE05: Dockerfile-bing-data
+  K8S_ECR_SHORT06: ek1-air-google-adwords
+  DOCKER_FILE06: Dockerfile-google-adwords
+  K8S_ECR_SHORT07: ek1-air-netsuite-data
+  DOCKER_FILE07: Dockerfile-netsuite-data
+  
 on:
   workflow_dispatch:
   push:
+    branches: 
+      - '**'
+      - '!develop'
+      - '!main'
+
+  pull_request:
     branches:
-      - "**"
+    - '**'
+    - '!develop'
+    - '!main'
 
 jobs:
 
+  
   Dags:
     name: 'Dags/Sync'
+
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ env.ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ env.SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
-
-      - name: Sync dags to s3
+        
+      - name: sync to s3
         run: |
-          prefix="${{ github.head_ref || github.ref_name }} _"
-          IFS=$'\n'
-          mkdir "modified_files_directory"
+          prefix="${{ github.head_ref || github.ref_name }}_"
+          echo github ${{github}}
+          echo github.head_ref branch $(github.head_ref)
+          echo github.ref_name  $(github.ref_name)
 
-          for item in $(git diff --name-only origin/develop ${{ github.sha }} | grep dags | grep -v dags/examples | grep -v dags/environment | grep .py); do
-              echo "Processing item: $item"
-              directory=$(dirname "$item")
-              filename=$(basename "$item")
-              echo directory = $directory, filename = $filename
-              if [ -d "/home/beehyv/Desktop/develop/$directory" ]; then
-                  mkdir -p "modified_files_directory/$directory"
-                  cp "$item" "modified_files_directory/$directory"
-                  new_name="${prefix}${filename}"
-                  mv "modified_files_directory/$item" "modified_files_directory/$directory/$new_name"
-                  sed -i "s/task_id="/task_id="$prefix/" "modified_files_directory/$directory/$new_name"
-                  sed -i "s/name="/name="$prefix/" "modified_files_directory/$directory/$new_name"
-                  echo "$new_name"
-              fi
-              echo 
-          done
+          # IFS=$'\n'
+          # mkdir "modified_files_directory"
 
-          aws s3 sync modified_files_directory/ s3://lettesthimanshu/dags/ --delete
+          # for item in $(git diff --name-only origin/develop ${{ github.sha }} | grep dags | grep -v dags/examples | grep -v dags/environment | grep .py); do
+          #     echo "Processing item: $item"
+          #     directory=$(dirname "$item")
+          #     filename=$(basename "$item")
+          #     echo directory = $directory, filename = $filename
+          #     if [ -d "/home/beehyv/Desktop/develop/$directory" ]; then
+          #         mkdir -p "modified_files_directory/$directory"
+          #         cp "$item" "modified_files_directory/$directory"
+          #         new_name="${prefix}${filename}"
+          #         mv "modified_files_directory/$item" "modified_files_directory/$directory/$new_name"
+          #         sed -i "s/task_id="/task_id="$prefix/" "modified_files_directory/$directory/$new_name"
+          #         sed -i "s/name="/name="$prefix/" "modified_files_directory/$directory/$new_name"
+          #         echo "$new_name"
+          #     fi
+          #     echo 
+          # done
+          # aws s3 cp modified_files_directory/dags/ s3://ek-airflow-dev/dags/ --recursive
+
+
+          # BRANCH_NAME = ${{ github.head_ref || github.ref_name }} 
+          # echo $(git diff --name-only origin/develop ${{ github.sha }})
+          # files=$(git diff --name-only origin/develop)
+          # mkdir modified_files_directory
+          # IFS=$'\n'
+          # for file in $files; do
+            
+          #   modified_file=$(echo "$file" | sed 's|\(.*\)/|\1/$BRANCH_NAME|')
+          #   mv "$file" "$modified_file" || true
+          #   echo "Original File Name: $file"
+          #   echo "Modified File Name: $modified_file"
+          #   sed -i "s/task_id='/task_id='${{env.BRANCH_NAME}}/" $modified_file || true
+          #   sed -i "s/name='/name='${{env.BRANCH_NAME}}/" $modified_file || true
+          #   cp $modified_file modified_files_directory/ || true
+          # done
+          # aws s3 sync modified_files_directory/ s3://ek-airflow-dev/dags/
+          # aws s3 sync s3://ek-airflow-dev/dags/ s3://${{ env.AWS_BUCKET_NAME }}/dags/
+
+
