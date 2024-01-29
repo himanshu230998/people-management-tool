@@ -72,7 +72,7 @@ jobs:
       - name: sync to s3
         run: |
           prefix="${{ github.head_ref || github.ref_name }}_"
-          echo github ${{github}}
+          echo github ${{toJson(github)}}
           echo github.head_ref branch $(github.head_ref)
           echo github.ref_name  $(github.ref_name)
  
