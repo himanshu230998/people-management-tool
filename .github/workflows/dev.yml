@@ -39,6 +39,7 @@ env:
   DOCKER_FILE07: Dockerfile-netsuite-data
   
 on:
+  delete:
   workflow_dispatch:
   push:
     branches: 
@@ -46,11 +47,12 @@ on:
       # - '!develop'
       # - '!main'
 
-  # pull_request:
-  #   branches:
-  #   - '**'
+  pull_request:
+    branches:
+    - '**'
   #   - '!develop'
   #   - '!main'
+    
 
 jobs:
 
