@@ -39,8 +39,8 @@ env:
   DOCKER_FILE07: Dockerfile-netsuite-data
   
 on:
-  delete:
   workflow_dispatch:
+  delete:
   push:
     branches: 
       - '**'
@@ -63,8 +63,8 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
-        # with:
-        #   fetch-depth: 0
+        with:
+          fetch-depth: 0
       # - uses: aws-actions/configure-aws-credentials@v1
       #   with:
       #     aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
@@ -74,6 +74,18 @@ jobs:
       - name: sync to s3
         run: |
           prefix="${{ github.head_ref || github.ref_name }}_"
+          echo github.ref_name ${{ github.ref_name }}
+          echo github.head_ref ${{ github.head_ref }}
+          echo github.event_name ${{ github.event_name }}
+          if [[ ${{ github.event_name }} == 'push' ]]
+          then
+          echo if-push
+          fi
+          if [[ ${{ github.event_name }} == 'delete' ]]
+          then
+          echo if-delete
+          fi
+          echo git diff $(git diff --name-only origin/main ${{ github.sha }})
           echo github "${{toJson(github)}}"
           echo github.head_ref branch $(github.head_ref)
           echo github.ref_name  $(github.ref_name)
