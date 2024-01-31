@@ -47,6 +47,7 @@ on:
       # - '!develop'
       # - '!main'
 
+
   # pull_request:
   #   branches:
   #   - 'main'
@@ -71,22 +72,21 @@ jobs:
         
       - name: sync to s3
         run: |
-          prefix="${{ github.head_ref || github.ref_name }}_"
-          echo github.ref_name ${{ github.ref_name }}
-          echo github.head_ref ${{ github.head_ref }}
-          echo github.event_name ${{ github.event_name }}
-          if [[ ${{ github.event_name }} == 'push' ]]
-          then
-          echo if-push
-          fi
-          if [[ ${{ github.event_name }} == 'delete' ]]
-          then
-          echo if-delete
-          fi
-          echo git diff $(git diff --name-only origin/main ${{ github.sha }})
+          #prefix="${{ github.head_ref || github.ref_name }}_"
+          #echo github.ref_name ${{ github.ref_name }}
+          #echo github.head_ref ${{ github.head_ref }}
+          #echo github.event_name ${{ github.event_name }}
+          #if [[ ${{ github.event_name }} == 'push' ]]
+          #then
+          #echo if-push
+          #fi
+          #if [[ ${{ github.event_name }} == 'delete' ]]
+          #then
+          #echo if-delete
+          #fi
+          #echo git diff $(git diff --name-only origin/main ${{ github.sha }})
           echo github "${{toJson(github)}}"
-          echo github.head_ref branch $(github.head_ref)
-          echo github.ref_name  $(github.ref_name)
+
  
           # IFS=$'\n'
           # mkdir "modified_files_directory"
