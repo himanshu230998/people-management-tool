@@ -73,6 +73,7 @@ jobs:
         
       - name: sync to s3
         run: |
+          echo pixel
           prefix="${{ github.head_ref || github.ref_name }}_"
           echo github.ref_name ${{ github.ref_name }}
           echo github.head_ref ${{ github.head_ref }}
