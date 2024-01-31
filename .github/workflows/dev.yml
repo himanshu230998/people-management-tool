@@ -47,11 +47,9 @@ on:
       # - '!develop'
       # - '!main'
 
-  # pull_request:
-  #   branches:
-  #   - '**'
-  #   - '!develop'
-  #   - '!main'
+  pull_request:
+    branches:
+    - 'main'
     
 
 jobs:
