@@ -47,9 +47,9 @@ on:
       # - '!develop'
       # - '!main'
 
-  pull_request:
-    branches:
-    - '**'
+  # pull_request:
+  #   branches:
+  #   - '**'
   #   - '!develop'
   #   - '!main'
     
