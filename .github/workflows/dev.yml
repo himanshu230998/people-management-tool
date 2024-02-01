@@ -75,5 +75,5 @@ jobs:
       - name: sync to s3
         run: |
           echo github "${{toJson(github)}}" || true
-          echo haha
+          echo lastlast
           
