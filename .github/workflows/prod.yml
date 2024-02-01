@@ -1,5 +1,8 @@
 name: Prod Deploy
-  
+
+env:
+  JSON: ${{ toJSON(github) }}
+
 on:
   workflow_dispatch:
   delete:
@@ -29,6 +32,6 @@ jobs:
       - name: sync to s3
         run: |
           echo prod branch name ${{ github.event.ref }}
-          echo github "${{toJson(github)}}" || true
+          echo github "${{env.JSON}}" || true
 
           

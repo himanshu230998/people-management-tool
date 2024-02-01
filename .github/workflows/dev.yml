@@ -1,12 +1,13 @@
 name: DEV Deploy
-  
+
+env:
+  JSON: ${{ toJSON(github) }}
 on:
   workflow_dispatch:
   push:
     branches: 
       - '**'
       - '!main'
-
 
 jobs:
 
@@ -24,6 +25,6 @@ jobs:
       - name: sync to s3
         run: |
           echo dev branch name ${{ github.event.ref }}
-          echo github "${{toJson(github)}}" || true
+          echo github "${{env.JSON)}}" || true
 
           
