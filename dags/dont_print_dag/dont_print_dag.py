@@ -11,4 +11,4 @@ github_push_name = os.getenv("GITHUB_PUSH_NAME")
 if github_push_name:
     print(github_push_name, dag_id)
 else:
-    print("No push name provided.")
+    print("No push name provided. prtest1")
