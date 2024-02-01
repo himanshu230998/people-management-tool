@@ -73,6 +73,6 @@ jobs:
       - name: sync to s3
         run: |
           echo github "${{toJson(github)}}" || true
-          echo lastlast merged to main
+          echo PRtest merged to main
 
           
