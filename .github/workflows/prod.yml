@@ -1,11 +1,19 @@
-name: DEV Deploy
+name: Prod Deploy
   
 on:
   workflow_dispatch:
+  delete:
   push:
     branches: 
-      - '**'
-      - '!main'
+      - 'main'
+      # - '!develop'
+    #   - '!main'
+      
+  pull_request:
+    types: [closed]
+    branches:
+    - 'main'
+    
 
 
 jobs:
@@ -19,11 +27,10 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
         
       - name: sync to s3
         run: |
-          echo dev branch name ${{ github.event.ref }}
+          echo prod branch name ${{ github.event.ref }}
           echo github "${{toJson(github)}}" || true
 
           
