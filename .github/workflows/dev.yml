@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      my-output: ${{ steps.step-one.outputs.my-output }}
+      dockerfile-to-be-build: ${{ steps.step-one.outputs.dockerfile-to-be-build }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -22,17 +22,17 @@ jobs:
         id: step-one
         run: |
           # Your commands for step one here
-          echo "::set-output name=my-output::$(git diff --name-only origin/main ${{ github.sha }} )"
+          echo "::set-output name=dockerfile-to-be-build::$(git diff --name-only origin/main ${{ github.sha }} )"
 
   step-two:
     needs: step-one
     runs-on: ubuntu-latest
-    if: contains(needs.step-one.outputs.my-output, '.')
+    if: contains(needs.step-one.outputs.dockerfile-to-be-build, '.')
     steps:
       - name: Step Two
         run: |
           # Use the output from step one here
-          echo "Output from step one: ${{ needs.step-one.outputs.my-output }}"
+          echo "Output from step one: ${{ needs.step-one.outputs.dockerfile-to-be-build }}"
 
 
 
