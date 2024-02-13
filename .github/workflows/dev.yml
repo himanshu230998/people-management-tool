@@ -9,7 +9,7 @@ on:
 
 
 jobs:
-  step-one:
+  Dags:
     runs-on: ubuntu-latest
 
     outputs:
@@ -25,7 +25,7 @@ jobs:
           echo "::set-output name=dockerfile-to-be-build::$(git diff --name-only origin/main ${{ github.sha }} )"
 
   step-two:
-    needs: step-one
+    needs: Dags
     runs-on: ubuntu-latest
     if: contains(needs.step-one.outputs.dockerfile-to-be-build, '.')
     steps:
