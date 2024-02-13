@@ -18,12 +18,12 @@ jobs:
         id: step-one
         run: |
           # Your commands for step one here
-          echo "::set-output name=my-output::some_string_containing_xyz"
+          echo "::set-output name=my-output::$(git diff --name-only origin/main ${{ github.sha }} )"
 
   step-two:
     needs: step-one
     runs-on: ubuntu-latest
-    if: contains(needs.step-one.outputs.my-output, 'xyz')
+    if: contains(needs.step-one.outputs.my-output, '.')
     steps:
       - name: Step Two
         run: |
@@ -32,7 +32,7 @@ jobs:
 
 
 
-          
+
 
 
 # name: DEV Deploy
