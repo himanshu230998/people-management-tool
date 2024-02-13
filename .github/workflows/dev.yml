@@ -11,9 +11,13 @@ on:
 jobs:
   step-one:
     runs-on: ubuntu-latest
+
     outputs:
       my-output: ${{ steps.step-one.outputs.my-output }}
     steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Step One
         id: step-one
         run: |
