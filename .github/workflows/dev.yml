@@ -1,7 +1,5 @@
-name: DEV Deploy
+name: Example Workflow
 
-env:
-  JSON: ${{ toJSON(github) }}
 on:
   workflow_dispatch:
   push:
@@ -9,22 +7,59 @@ on:
       - '**'
       - '!main'
 
+
 jobs:
+  step-one:
+    runs-on: ubuntu-latest
+    outputs:
+      my-output: ${{ steps.step-one.outputs.my-output }}
+    steps:
+      - name: Step One
+        id: step-one
+        run: |
+          # Your commands for step one here
+          echo "::set-output name=my-output::some_string_containing_xyz"
+
+  step-two:
+    needs: step-one
+    runs-on: ubuntu-latest
+    if: contains(needs.step-one.outputs.my-output, 'xyz')
+    steps:
+      - name: Step Two
+        run: |
+          # Use the output from step one here
+          echo "Output from step one: ${{ needs.step-one.outputs.my-output }}"
+
+
+
+
+# name: DEV Deploy
+
+# env:
+#   JSON: ${{ toJSON(github) }}
+# on:
+#   workflow_dispatch:
+#   push:
+#     branches: 
+#       - '**'
+#       - '!main'
+
+# jobs:
 
   
-  Dags:
-    name: 'Dags/Sync'
+#   Dags:
+#     name: 'Dags/Sync'
 
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+#     runs-on: ubuntu-22.04
+#     steps:
+#       - uses: actions/checkout@v2
+#         with:
+#           fetch-depth: 0
 
         
-      - name: sync to s3
-        run: |
-          echo dev branch name ${{ github.event.ref }}
-          echo github "${{ env.JSON }}" || true
+#       - name: sync to s3
+#         run: |
+#           echo dev branch name ${{ github.event.ref }}
+#           echo github "${{ env.JSON }}" || true
 
           
