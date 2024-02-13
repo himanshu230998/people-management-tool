@@ -32,7 +32,7 @@ jobs:
   step-two:
     needs: Dags
     runs-on: ubuntu-latest
-    if: contains(needs.Dags.outputs.dockerfile-to-be-build, '.')
+    if: contains(needs.Dags.outputs.dockerfile-to-be-build, 'xyz') || contains(needs.Dags.outputs.dockerfile-to-be-build, 'mnq') || contains(needs.Dags.outputs.dockerfile-to-be-build, '.') 
     steps:
       - name: Step Two
         run: |
