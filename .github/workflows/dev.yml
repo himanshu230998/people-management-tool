@@ -22,9 +22,10 @@ jobs:
         id: step-one
         run: |
           # Your commands for step one here
-          echo result $(git diff --name-only origin/main ${{ github.sha }} )
+          result=git diff --name-only origin/main ${{ github.sha }}
+          echo result $(result)
           echo result printed above
-          echo "dockerfile-to-be-build=$(git diff --name-only origin/main ${{ github.sha }} )" >> $GITHUB_OUTPUT
+          echo "dockerfile-to-be-build=$result" >> $GITHUB_OUTPUT
           
 
 
