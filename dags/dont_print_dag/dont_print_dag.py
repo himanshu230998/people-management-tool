@@ -12,3 +12,5 @@ if github_push_name:
     print(github_push_name, dag_id)
 else:
     print("No push name provided. prtest1")
+
+    

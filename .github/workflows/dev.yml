@@ -22,7 +22,9 @@ jobs:
         id: step-one
         run: |
           # Your commands for step one here
-          echo "::set-output name=dockerfile-to-be-build::$(git diff --name-only origin/main ${{ github.sha }} )"
+          echo "dockerfile-to-be-build=$(git diff --name-only origin/main ${{ github.sha }} )" >> $GITHUB_OUTPUT
+          echo result
+
 
   step-two:
     needs: Dags
