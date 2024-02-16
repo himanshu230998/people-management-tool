@@ -9,26 +9,48 @@ on:
 
 
 jobs:
-  step-one:
+  Dags:
     runs-on: ubuntu-latest
+
     outputs:
-      my-output: ${{ steps.step-one.outputs.my-output }}
+      dockerfile-to-be-build: ${{ steps.step-one.outputs.dockerfile-to-be-build }}
     steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Step One
         id: step-one
         run: |
           # Your commands for step one here
-          echo "::set-output name=my-output::some_string_containing_xyz"
+          echo dev branch name ${{ github.event.ref }}
+          echo dev event name ${{ github.event_name }}
+          if [[ ${{ github.event_name }} == 'delete' ||  ${{github.ref}} == 'refs/heads/develop' ]]
+          then
+          echo hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+          fi
+          # result=$(echo $(git diff --name-only origin/main ${{ github.sha }}) | sed 's/ /;/g')
+          # echo result $result
+          # echo result printed above
+          # echo "dockerfile-to-be-build=$result" >> $GITHUB_OUTPUT
+          
+          
 
-  step-two:
-    needs: step-one
-    runs-on: ubuntu-latest
-    if: contains(needs.step-one.outputs.my-output, 'xyz')
-    steps:
-      - name: Step Two
-        run: |
-          # Use the output from step one here
-          echo "Output from step one: ${{ needs.step-one.outputs.my-output }}"
+
+
+          
+
+
+  # step-two:
+  #   needs: Dags
+  #   runs-on: ubuntu-latest
+  #   if: contains(needs.Dags.outputs.dockerfile-to-be-build, 'xyz') || contains(needs.Dags.outputs.dockerfile-to-be-build, 'mnq') || contains(needs.Dags.outputs.dockerfile-to-be-build, '.') 
+  #   steps:
+  #     - name: Step Two
+  #       run: |
+  #         # Use the output from step one here
+  #         echo "Output from step one: ${{ needs.Dags.outputs.dockerfile-to-be-build }}"
+
+
 
 
 
