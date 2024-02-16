@@ -24,6 +24,10 @@ jobs:
           # Your commands for step one here
           echo dev branch name ${{ github.event.ref }}
           echo dev event name ${{ github.event_name }}
+          if [[ ${{ github.event_name }} == 'delete' ||  ${{github.ref}} == 'refs/heads/develop' ]]
+          then
+          echo hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+          fi
           # result=$(echo $(git diff --name-only origin/main ${{ github.sha }}) | sed 's/ /;/g')
           # echo result $result
           # echo result printed above
