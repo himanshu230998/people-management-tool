@@ -31,6 +31,7 @@ jobs:
         
       - name: sync to s3
         run: |
+          echo github.ref_name  ${{ github.ref_name }}
           echo prod branch name ${{ github.event.ref }}
           echo github "${{env.JSON}}" || true
           echo github ${{github}}
