@@ -31,6 +31,7 @@ jobs:
         
       - name: sync to s3
         run: |
+          echo env.PARAMS_ENTERED ${{ env.PARAMS_ENTERED }}
           echo github.ref_name  ${{ github.ref_name }}
           echo prod branch name ${{ github.event.ref }}
           echo github "${{env.JSON}}" || true
