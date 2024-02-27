@@ -24,6 +24,7 @@ jobs:
           # Your commands for step one here
           echo dev branch name ${{ github.event.ref }}
           echo dev event name ${{ github.event_name }}
+          echo github ${{github}}
           if [[ ${{ github.event_name }} == 'delete' ||  ${{github.ref}} == 'refs/heads/develop' ]]
           then
           echo hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
