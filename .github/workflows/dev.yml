@@ -6,7 +6,9 @@ on:
     branches: 
       - '**'
       - '!main'
-
+env:
+  PARAMS_ENTERED: ${{ toJSON(github) }}
+  
 
 jobs:
   Dags:
@@ -22,6 +24,8 @@ jobs:
         id: step-one
         run: |
           # Your commands for step one here
+          echo env.PARAMS_ENTERED ${{ env.PARAMS_ENTERED }}
+          echo github.ref_name  ${{ github.ref_name }}
           echo dev branch name ${{ github.event.ref }}
           echo dev event name ${{ github.event_name }}
           echo github ${{github}}
