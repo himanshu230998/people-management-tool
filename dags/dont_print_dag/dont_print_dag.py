@@ -14,12 +14,3 @@ else:
     print("No push name provided. prtest1")
 
 
-
-
-
-
-
-
-
-
-
